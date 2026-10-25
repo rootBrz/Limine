@@ -87,23 +87,40 @@ If you use Secure Boot or `limine enroll-config`, a plain copy will lose
 the signature or the enrolled config checksum. Do not follow these steps in
 that case.
 
-A later update of the system's Limine package may overwrite the file. Copy
-it again afterwards.
+A later update of the system's Limine package may overwrite the file. On
+CachyOS, see below; elsewhere, copy it again afterwards.
 
-Optional, Arch based systems only: stop `pacman` upgrading the `limine`
-package, so an update cannot overwrite your build. This adds `IgnorePkg =
-limine` to `/etc/pacman.conf` (running it twice is harmless):
-
-```
-grep -q '^IgnorePkg = limine$' /etc/pacman.conf || sudo sed -i '/^\[options\]/a IgnorePkg = limine' /etc/pacman.conf
-```
-
-While it is set, you get no updates or security fixes for the `limine`
-package. Another package's hook may still replace the file; this only stops
-`pacman` upgrading `limine` itself. To undo it:
+Keeping it across updates (CachyOS): `limine-install` runs after updates of
+`limine` or `limine-mkinitcpio-hook`, and copies the package's stock
+`BOOTX64.EFI` over yours. To make it install this build instead, keep the
+build in a permanent place and point `limine-install` at it. Run these from the
+Limine directory you built:
 
 ```
-sudo sed -i '/^IgnorePkg = limine$/d' /etc/pacman.conf
+sudo install -Dm644 bin/BOOTX64.EFI /usr/local/share/limine-gamepad/BOOTX64.EFI
+grep -qxF 'LIMINE_BINARY_PATH=/usr/local/share/limine-gamepad/BOOTX64.EFI' /etc/default/limine || echo 'LIMINE_BINARY_PATH=/usr/local/share/limine-gamepad/BOOTX64.EFI' | sudo tee -a /etc/default/limine
+grep -qxF 'SKIP_LIMINE_VERSION_CHECK=yes' /etc/default/limine || echo 'SKIP_LIMINE_VERSION_CHECK=yes' | sudo tee -a /etc/default/limine
+sudo limine-install --no-efi-register
+```
+
+`SKIP_LIMINE_VERSION_CHECK` is needed because this build carries no version
+number that `limine-install` can read, so it would skip the install without
+saying so. It also turns off the protection against installing an older
+Limine. `--no-efi-register` leaves the UEFI boot entries alone. This also
+replaces the fallback `/boot/EFI/BOOT/BOOTX64.EFI`.
+
+Check that it worked; all three hashes must be identical:
+
+```
+sudo sha256sum /usr/local/share/limine-gamepad/BOOTX64.EFI /boot/EFI/limine/limine_x64.efi /boot/EFI/BOOT/BOOTX64.EFI
+```
+
+After rebuilding the fork, run the first and last commands again. To go back
+to the stock Limine:
+
+```
+sudo sed -i '/^LIMINE_BINARY_PATH=/d;/^SKIP_LIMINE_VERSION_CHECK=/d' /etc/default/limine
+sudo env SKIP_LIMINE_VERSION_CHECK=yes limine-install --no-efi-register
 ```
 
 ## Going back
