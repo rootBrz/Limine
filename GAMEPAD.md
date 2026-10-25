@@ -74,10 +74,11 @@ The result is `bin/BOOTX64.EFI`.
 Find where your system keeps Limine. On CachyOS it is usually
 `/boot/EFI/limine/limine_x64.efi`; check with `efibootmgr -v` if unsure.
 
-Back up the old file first, then replace it:
+Back up the old file first (the backup is only made once, so repeating the
+step keeps your original), then replace it:
 
 ```
-sudo cp /boot/EFI/limine/limine_x64.efi /boot/EFI/limine/limine_x64.efi.bak
+sudo cp -n /boot/EFI/limine/limine_x64.efi /boot/EFI/limine/limine_x64.efi.bak
 sudo cp bin/BOOTX64.EFI /boot/EFI/limine/limine_x64.efi
 sync
 ```
