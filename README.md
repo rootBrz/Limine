@@ -40,6 +40,22 @@ sudo cp /boot/EFI/limine/limine_x64.efi.bak /boot/EFI/limine/limine_x64.efi
 A system update of the Limine package may overwrite the installed file; run
 the install block again afterwards.
 
+Optional, Arch based systems only: stop `pacman` upgrading the `limine`
+package, so an update cannot overwrite your build. This adds `IgnorePkg =
+limine` to `/etc/pacman.conf` (running it twice is harmless):
+
+```
+grep -q '^IgnorePkg = limine$' /etc/pacman.conf || sudo sed -i '/^\[options\]/a IgnorePkg = limine' /etc/pacman.conf
+```
+
+While it is set, you get no updates or security fixes for the `limine`
+package. Another package's hook may still replace the file; this only stops
+`pacman` upgrading `limine` itself. To undo it:
+
+```
+sudo sed -i '/^IgnorePkg = limine$/d' /etc/pacman.conf
+```
+
 #### Findings behind this fork
 
 Measured on an ASUS ROG Ally (RC71L) with Limine 12.9.4. Upstream issue:
