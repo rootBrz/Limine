@@ -7,11 +7,11 @@ ASUS ROG Ally, whose built-in controller shows up as USB `045e:028e`.
 
 ## Status
 
-- Tested on one ROG Ally (original model, not the Ally X): the controls
-  work on a direct cold boot into Limine.
+- Tested on one ROG Ally (RC71L, not the Ally X): the controls work on a
+  direct cold boot into Limine.
 - Without this driver, the same device only gets working controls in Limine
-  after a visit to the BIOS setup. The firmware only creates a pointer for the
-  controller then.
+  after a visit to the BIOS setup. The firmware only exposes a second
+  absolute pointer then.
 - Untested on any other device.
 
 ## Supported controllers
