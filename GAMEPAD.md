@@ -60,7 +60,7 @@ sudo pacman -S --needed base-devel git clang lld llvm nasm autoconf automake
 Then:
 
 ```
-git clone -b uefi-gamepad https://github.com/rootBrz/Limine.git
+git clone --depth 1 -b uefi-gamepad https://github.com/rootBrz/Limine.git
 cd Limine
 ./bootstrap
 ./configure --enable-uefi-x86-64 --disable-uefi-cd
