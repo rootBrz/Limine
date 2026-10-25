@@ -56,13 +56,13 @@ sudo limine-install --no-efi-register
 `SKIP_LIMINE_VERSION_CHECK` is needed because this build carries no version
 number that `limine-install` can read, so it would skip the install without
 saying so. It also turns off the protection against installing an older
-Limine. `--no-efi-register` leaves the UEFI boot entries alone. This also
-replaces the fallback `/boot/EFI/BOOT/BOOTX64.EFI`.
+Limine. `--no-efi-register` leaves the UEFI boot entries alone, and the
+fallback `/boot/EFI/BOOT/BOOTX64.EFI` is left unchanged.
 
-Check that it worked; all three hashes must be identical:
+Check that it worked; the two hashes must be identical:
 
 ```
-sudo sha256sum /usr/local/share/limine-gamepad/BOOTX64.EFI /boot/EFI/limine/limine_x64.efi /boot/EFI/BOOT/BOOTX64.EFI
+sudo sha256sum /usr/local/share/limine-gamepad/BOOTX64.EFI /boot/EFI/limine/limine_x64.efi
 ```
 
 After rebuilding the fork, run the first and last commands again. To go back
