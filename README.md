@@ -25,7 +25,7 @@ cd Limine
 
 Install (this backs up the current file once, then replaces it):
 ```
-ls /boot/EFI/limine/limine_x64.efi && sudo cp -n /boot/EFI/limine/limine_x64.efi /boot/EFI/limine/limine_x64.efi.bak && sudo cp bin/BOOTX64.EFI /boot/EFI/limine/limine_x64.efi && sync && echo INSTALLED
+sudo ls /boot/EFI/limine/limine_x64.efi && sudo cp -n /boot/EFI/limine/limine_x64.efi /boot/EFI/limine/limine_x64.efi.bak && sudo cp bin/BOOTX64.EFI /boot/EFI/limine/limine_x64.efi && sync && echo INSTALLED
 ```
 
 If it prints `No such file`, nothing was changed: your system keeps Limine
