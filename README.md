@@ -17,7 +17,7 @@ x86-64 machine, run these commands in a terminal, one block at a time.
 
 Build:
 ```
-sudo pacman -S --needed base-devel git clang lld llvm nasm autoconf automake
+sudo pacman -Syu --needed base-devel git clang lld llvm nasm autoconf automake
 git clone --depth 1 -b uefi-gamepad https://github.com/rootBrz/Limine.git
 cd Limine
 ./bootstrap && ./configure --enable-uefi-x86-64 --disable-uefi-cd && make

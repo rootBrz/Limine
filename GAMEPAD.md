@@ -54,7 +54,7 @@ You need `git`, `clang` with `lld` (or `gcc` with binutils), `nasm`, GNU
 `make`, `autoconf` and `automake`. On Arch based systems such as CachyOS:
 
 ```
-sudo pacman -S --needed base-devel git clang lld llvm nasm autoconf automake
+sudo pacman -Syu --needed base-devel git clang lld llvm nasm autoconf automake
 ```
 
 Then:
