@@ -40,6 +40,28 @@ sudo cp /boot/EFI/limine/limine_x64.efi.bak /boot/EFI/limine/limine_x64.efi
 A system update of the Limine package may overwrite the installed file; run
 the install block again afterwards.
 
+#### Findings behind this fork
+
+Measured on an ASUS ROG Ally (RC71L) with Limine 12.9.4. Upstream issue:
+[#644](https://github.com/Limine-Bootloader/Limine/issues/644).
+
+* Limine only uses input the firmware already exposes: text input and the
+  pointer protocols. Nothing reads USB gamepads.
+* On a cold boot the firmware exposes no gamepad input. The only absolute
+  pointer is the console splitter's own aggregate handle, with no device
+  behind it.
+* The controller is on the USB bus on a cold boot (`045e:028e`, an Xbox 360
+  class pad), alongside the keyboard-class `0b05:1abe`, Bluetooth `0489:e0f5`
+  and `2808:a753`.
+* After entering the BIOS setup once, the firmware adds a second absolute
+  pointer with a vendor-defined, non-USB device path. Stock Limine then works
+  with the controls. I do not know what that pointer belongs to.
+* Connecting all controllers recursively before the menu does not create it.
+* So this fork reads the pad directly over the firmware's USB I/O protocol,
+  which works on a cold boot without visiting the BIOS.
+
+Not tested: the Ally X, or any other device.
+
 ### What is Limine?
 
 Limine (pronounced as demonstrated [here](https://www.merriam-webster.com/dictionary/in%20limine))
