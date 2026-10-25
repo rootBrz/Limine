@@ -176,6 +176,10 @@ Miscellaneous:
   the scroll wheel moves the selection. Using the mouse stops the `timeout`
   countdown, as pressing a key does. On BIOS this uses the PS/2 (or emulated
   PS/2) mouse; on UEFI any pointer device the firmware exposes.
+* `gamepad` - If set to `no`, disable gamepad support in the boot menu.
+  Defaults to `yes`, in which case, if a USB Xbox 360 class controller is
+  present, the D-pad moves the selection, A or Start selects, B is Escape, X
+  edits the entry, and the bumpers page up and down. (UEFI only).
 
 Limine interface control options:
 
