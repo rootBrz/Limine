@@ -13,6 +13,9 @@
 #  include <efi.h>
 #endif
 #include <drivers/mouse.h>
+#if defined (UEFI)
+#  include <drivers/gamepad.h>
+#endif
 #include <drivers/serial.h>
 #include <sys/cpu.h>
 
@@ -428,7 +431,7 @@ static int sleep_ms_core(uint64_t milliseconds, bool deliver_mouse) {
 
     EFI_UINTN which;
 
-    EFI_EVENT events[18];
+    EFI_EVENT events[19];
 
     size_t pointer_count = 0;
 
@@ -436,6 +439,12 @@ static int sleep_ms_core(uint64_t milliseconds, bool deliver_mouse) {
     // pointer position preserved across a menu re-entry) before blocking.
     if (deliver_mouse && mouse_state_pending()) {
         return GETCHAR_MOUSE;
+    }
+
+    // The gamepad event only fires on a push, so drain what is queued first.
+    int pad_key = gamepad_get_key();
+    if (pad_key != 0) {
+        return pad_key;
     }
 
     EFI_GUID exproto_guid = EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL_GUID;
@@ -465,6 +474,12 @@ static int sleep_ms_core(uint64_t milliseconds, bool deliver_mouse) {
         pointer_count = mouse_get_efi_events(&events[2], 16);
     }
 
+    size_t wait_count = 2 + pointer_count;
+    size_t pad_index = wait_count;
+    if (gamepad_get_efi_event() != NULL) {
+        events[wait_count++] = gamepad_get_efi_event();
+    }
+
 restart:
     gBS->CreateEvent(EFI_EVT_TIMER, EFI_TPL_CALLBACK, NULL, NULL, &events[1]);
 
@@ -474,11 +489,20 @@ restart:
 again:
     memset(&kd, 0, sizeof(EFI_KEY_DATA));
 
-    gBS->WaitForEvent(2 + pointer_count, events, &which);
+    gBS->WaitForEvent(wait_count, events, &which);
 
     if (which == 1) {
         gBS->CloseEvent(events[1]);
         return 0;
+    }
+
+    if (which >= pad_index && wait_count > pad_index) {
+        pad_key = gamepad_get_key();
+        if (pad_key != 0) {
+            gBS->CloseEvent(events[1]);
+            return pad_key;
+        }
+        goto again;
     }
 
     if (which >= 2) {

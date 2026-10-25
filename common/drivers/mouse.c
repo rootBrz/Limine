@@ -2,6 +2,9 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include <drivers/mouse.h>
+#if defined (UEFI)
+#  include <drivers/gamepad.h>
+#endif
 #include <lib/config.h>
 #include <lib/libc.h>
 #include <lib/misc.h>
@@ -754,6 +757,9 @@ bool mouse_init(void) {
 
     mouse_deinit();
 
+    // The gamepad shares the mouse's lifetime: up with the menu, down before boot.
+    gamepad_init();
+
     if (mouse_config_disabled() || terms_i == 0 || efi_boot_services_exited) {
         return false;
     }
@@ -786,6 +792,7 @@ bool mouse_init(void) {
 }
 
 void mouse_deinit(void) {
+    gamepad_deinit();
     if (mouse_active) {
         mouse_erase_pointer();
     }
