@@ -4,6 +4,42 @@
     <img src="https://github.com/Limine-Bootloader/Limine/blob/trunk/logo.png?raw=true" alt="Limine's logo"/>
 </p>
 
+### About this fork
+
+This is an unofficial fork of [Limine](https://github.com/Limine-Bootloader/Limine).
+It is not supported by the Limine project; please do not report its problems
+there. It adds USB gamepad support to the UEFI boot menu, written for the ASUS
+ROG Ally. The `uefi-gamepad` branch is the one to use. Details, supported
+controllers and limits are in [GAMEPAD.md](GAMEPAD.md).
+
+To build and install it on an Arch based system such as CachyOS with a UEFI
+x86-64 machine, run these commands in a terminal, one block at a time.
+
+Build:
+```
+sudo pacman -S --needed base-devel git clang lld llvm nasm autoconf automake
+git clone -b uefi-gamepad https://github.com/rootBrz/Limine.git
+cd Limine
+./bootstrap && ./configure --enable-uefi-x86-64 --disable-uefi-cd && make
+```
+
+Install (this backs up the current file once, then replaces it):
+```
+ls /boot/EFI/limine/limine_x64.efi && sudo cp -n /boot/EFI/limine/limine_x64.efi /boot/EFI/limine/limine_x64.efi.bak && sudo cp bin/BOOTX64.EFI /boot/EFI/limine/limine_x64.efi && sync && echo INSTALLED
+```
+
+If it prints `No such file`, nothing was changed: your system keeps Limine
+somewhere else (see `efibootmgr -v`). Do not use these commands with Secure
+Boot or an enrolled config checksum.
+
+To go back:
+```
+sudo cp /boot/EFI/limine/limine_x64.efi.bak /boot/EFI/limine/limine_x64.efi
+```
+
+A system update of the Limine package may overwrite the installed file; run
+the install block again afterwards.
+
 ### What is Limine?
 
 Limine (pronounced as demonstrated [here](https://www.merriam-webster.com/dictionary/in%20limine))
