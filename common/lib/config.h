@@ -10,12 +10,15 @@ extern bool bad_config;
 
 struct menu_entry {
     char *name;
-    char *comment;
     struct menu_entry *parent;
     struct menu_entry *sub;
     bool expanded;
     char *body;
     struct menu_entry *next;
+    bool skipped_computed;
+    bool skipped;
+    bool dup_index_computed;
+    size_t dup_index;
 };
 
 struct conf_tuple {
